@@ -1,113 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Figmail</title>
-</head>
-<body>
-<style>
-  body {
-    text-align: center;
-    margin: 0;
-    padding: 0;
-  }
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <title>Figmail</title>
+  </head>
+  <body>
+    <div id="progress">
+      <div id="progress_inner">Converting</div>
+    </div>
 
-  .row {
-    position: relative;
-    margin: 20px auto;
-    width: 1024px;
-  }
+    <form action="javascript:callFigmaAndDrawMockups()">
+      <div class="input">
+        <input id='url_input' placeholder="Enter Figma URL" type="text">
+      </div>
+      <button class="submit">Convert</button>
+    </form>
 
-  .parent {
-    position: relative;
-    top: 0;
-    left: 0;
-    width: 1024px;
-  }
+    <iframe class="mail-preview js-iframe" srcdoc=""></iframe>
 
-  #progress {
-    border-bottom: 1px solid black;
-    visibility: hidden;
-  }
-
-  #progress_inner {
-    background-color: black;
-    -webkit-transition: width 1s;
-    color: white;
-    font-family: Apercu;
-    font-size: 14px;
-    width: 60px;
-    text-align: left;
-    padding: 3px 20px 5px;
-  }
-
-  input {
-    border-top: none;
-    border-left: none;
-    border-right: none;
-    border-bottom: 2px solid #dedede;
-    width: 800px;
-    text-align: center;
-    font-family: Apercu;
-    font-size: 18px;
-  }
-
-  .input {
-    margin: 60px 0 20px;
-  }
-
-  .submit {
-    font-family: Apercu;
-    font-size: 16px;
-    padding: 5px 20px 8px;
-    color: white;
-    background-color: black;
-    border: none;
-    border-radius: 3px;
-    margin-bottom: 60px;
-  }
-
-  img, canvas {
-    top: 0;
-    left: 0;
-    position: absolute;
-  }
-
-  .base_image {
-    position: relative;
-  }
-
-  .template {
-    width: 1024px;
-    height: auto;
-  }
-
-  .reflection {
-    top: 17.97%;
-    left: 28.2%;
-    width: 27.2%;
-    height: auto;
-    position: absolute;
-  }
-
-  #row3 {
-    margin-bottom: 100px;
-  }
-</style>
-
-<script type="text/javascript" src="progress.js"></script>
-<script type="text/javascript" src="main.js"></script>
-
-<div id="progress">
-  <div id="progress_inner">Rendering</div>
-</div>
-
-<form action="javascript:callFigmaAndDrawMockups()">
-  <div class="input">
-    <input id='url_input' placeholder="Enter Figma URL" type="text">
-  </div>
-  <button class="submit">Convert</button>
-</form>
-
-</body>
+    <script type="text/javascript" src="progress.js"></script>
+    <script type="text/javascript" src="main.js"></script>
+  </body>
 </html>

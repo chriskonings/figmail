@@ -18,72 +18,64 @@ fs.readFile('components/footer.html', 'utf8', function(err, file) {
 });
 
 function rgbToHex(r, g, b) {
-  // times 255 to convert to convert from decimal place
   return 'rgba(' +  r * 255 + ',' + g * 255 + ',' +  b * 255 + ')'
 }
 
 function buildHeader(header) {
-  console.log(header)
-  const bg = rgbToHex(header.backgroundColor.r , header.backgroundColor.g, header.backgroundColor.b)
-  const text = header.children.filter(child => child.type == 'TEXT')[0].characters
-  fs.readFile('components/header.html', 'utf8', function(err, source) {
-    var template = Handlebars.compile(head + source + footer);
-    var context = {bg, text};
-    var html = template(context);
-    var fs = require('fs');
-    fs.writeFile('tmp/email.html', html, function(err) {
-      if(err) {return console.log(err);}
-      console.log('The file was saved!');
+  const textEl = header.children.filter(child => child.type == 'TEXT')[0];
+  const bg = rgbToHex(header.backgroundColor.r , header.backgroundColor.g, header.backgroundColor.b);
+  const textColor = rgbToHex(textEl.fills[0].color.r, textEl.fills[0].color.g, textEl.fills[0].color.b);
+  const text = textEl.characters;
+  const promise = new Promise(function(resolve, reject) {
+    fs.readFile('components/header.html', 'utf8', function(err, source) {
+      var template = Handlebars.compile(source);
+      var context = {bg, text, textColor};
+      var html =  template(context);
+      resolve(html);
     });
   });
-  // console.log(html)
-  // email.filter(child => child.name.toLowerCase() == 'header')[0].children
-  // .map(frame => {
-  //   console.log(frame)
-  //   return {
-  //   name: frame.name,
-  //   id: frame.id
-  //   }
-  // })
+  return promise
 }
 
 function convert(doc) {
   let content = doc.children[0].children.filter(child => child.type == 'FRAME')[0].children
-  content.forEach(component => {
+  let promises = [];
+  content.forEach(async (component) => {
     // build component in to file
     // match component with HTML file
     if (component.name === 'header') {
-      buildHeader(component)
+      promises.push(buildHeader(component))
     }
+    // create body component function
+    // if (component.name === 'body') {
+    //   promises.push(buildBody(component))
+    // }
   });
+  const template = Promise.all(promises).then(function(values) {
+    const allComponents = head + values.join() + footer
+    fs.writeFile('tmp/email.html', allComponents, function(err) {
+      if(err) {return console.log(err);}
+      console.log('The file was saved !');
+    });
+    return allComponents
+  });
+  return template
 }
 
-const getFigmaFile = async (url) => {
+app.get('/convert', async (req, res) => {
+  const url = 'https://api.figma.com/v1/files/' + req.query.key + '?id=' + req.query.id;
   try {
     const response = await fetch(url,{
       method: 'GET',
       headers: { "x-figma-token": '4378-ec89dc8d-6301-4ee7-ae8f-8fa7341a0f43'}
     });
     const json = await response.json();
-    convert(json.document)
-    // console.log(json.results[0]);
+    const converted = await convert(json.document)
+    res.json(converted)
   } catch (error) {
     console.log(error);
   }
-};
 
-app.get('/convert', (req, response) => {
-  // response.send('Hello from Express!')
-  // fetch('https://api.figma.com/v1' + 'files', {
-  //     method: 'GET',
-  //     headers: { "x-figma-token": PERSONAL_ACCESS_TOKEN }
-  // }).then(function(response) {
-  //     return response.json();
-  // }).catch(function (error) {
-  //     return { err: error };
-  // });
-  const url = 'https://api.figma.com/v1/files/' + req.query.key + '?id=' + req.query.id;
-  getFigmaFile(url)
 })
 
 app.use('/', express.static(__dirname + '/'));
@@ -92,6 +84,5 @@ app.listen(port, (err) => {
   if (err) {
     return console.log('something bad happened', err)
   }
-
   console.log(`server is listening on ${port}`)
 })

@@ -12,19 +12,24 @@ parser.href = pageUrl;
 return decodeURIComponent(parser.search).replace('?node-id=','');
 }
 
-function apiRequest(fileKey, id) {
-return fetch('/convert?key=' + fileKey + '&id=' + id)
-.then(function(response) {
-    return response.json();
-}).catch(function (error) {
-    return { err: error };
-});
+async function apiRequest(fileKey, id) {
+  return fetch('/convert?key=' + fileKey + '&id=' + id)
+    .then(function(response) {
+      return response.json();
+    }).catch(function (error) {
+      return { err: error };
+    });
 }
 
-function callFigmaAndDrawMockups() {
-startProgress();
-const pageUrl = document.getElementById('url_input').value;
-const nodeId = getNodeId(pageUrl);
-apiRequest(getFileKey(pageUrl), nodeId);
-stopProgress();
+async function callFigmaAndDrawMockups() {
+  startProgress();
+  const pageUrl = document.getElementById('url_input').value;
+  const nodeId = getNodeId(pageUrl);
+  try {
+    const template = await apiRequest(getFileKey(pageUrl), nodeId);
+    document.querySelector('.js-iframe').srcdoc = template;
+  } catch {
+    console.log('error')
+  }
+  stopProgress();
 }
