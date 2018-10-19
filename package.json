@@ -1,0 +1,17 @@
+{
+  "name": "figmail",
+  "version": "1.0.0",
+  "description": "Design mail using Figma",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Chris Konings",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.4",
+    "handlebars": "^4.0.12",
+    "node-fetch": "^2.2.0"
+  }
+}
