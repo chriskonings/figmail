@@ -22,12 +22,30 @@ function rgbToHex(r, g, b) {
 }
 
 function buildHeader(header) {
-  const textEl = header.children.filter(child => child.type == 'TEXT')[0];
-  const bg = rgbToHex(header.backgroundColor.r , header.backgroundColor.g, header.backgroundColor.b);
+  const textEl = header.children.filter(child => child.name == 'text')[0];
+  const backgroundEl = header.children.filter(child => child.name == 'background')[0];
+  const bg = rgbToHex(backgroundEl.fills[0].color.r , backgroundEl.fills[0].color.g, backgroundEl.fills[0].color.b);
   const textColor = rgbToHex(textEl.fills[0].color.r, textEl.fills[0].color.g, textEl.fills[0].color.b);
   const text = textEl.characters;
   const promise = new Promise(function(resolve, reject) {
     fs.readFile('components/header.html', 'utf8', function(err, source) {
+      var template = Handlebars.compile(source);
+      var context = {bg, text, textColor};
+      var html =  template(context);
+      resolve(html);
+    });
+  });
+  return promise
+}
+
+function buildBody(body) {
+  const textEl = body.children.filter(child => child.name == 'text')[0];
+  const backgroundEl = body.children.filter(child => child.name == 'background')[0];
+  const bg = rgbToHex(backgroundEl.fills[0].color.r , backgroundEl.fills[0].color.g, backgroundEl.fills[0].color.b);
+  const textColor = rgbToHex(textEl.fills[0].color.r, textEl.fills[0].color.g, textEl.fills[0].color.b);
+  const text = textEl.characters;
+  const promise = new Promise(function(resolve, reject) {
+    fs.readFile('components/body.html', 'utf8', function(err, source) {
       var template = Handlebars.compile(source);
       var context = {bg, text, textColor};
       var html =  template(context);
@@ -46,10 +64,9 @@ function convert(doc) {
     if (component.name === 'header') {
       promises.push(buildHeader(component))
     }
-    // create body component function
-    // if (component.name === 'body') {
-    //   promises.push(buildBody(component))
-    // }
+    if (component.name === 'body') {
+      promises.push(buildBody(component))
+    }
   });
   const template = Promise.all(promises).then(function(values) {
     const allComponents = head + values.join() + footer
