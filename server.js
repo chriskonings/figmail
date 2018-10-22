@@ -33,9 +33,9 @@ function buildHeader(header) {
   const text = textEl.characters;
   const promise = new Promise(function(resolve, reject) {
     fs.readFile('components/header.html', 'utf8', function(err, source) {
-      var template = Handlebars.compile(source);
-      var context = {bg, text, textColor};
-      var html =  template(context);
+      const template = Handlebars.compile(source);
+      const context = {bg, text, textColor};
+      const html =  template(context);
       resolve(html);
     });
   });
@@ -51,9 +51,9 @@ function buildBody(body) {
   const text = textEl.characters;
   const promise = new Promise(function(resolve, reject) {
     fs.readFile('components/body.html', 'utf8', function(err, source) {
-      var template = Handlebars.compile(source);
-      var context = {bg, text, textColor};
-      var html =  template(context);
+      const template = Handlebars.compile(source);
+      const context = {bg, text, textColor};
+      const html =  template(context);
       resolve(html);
     });
   });
@@ -61,8 +61,8 @@ function buildBody(body) {
 }
 
 function convert(doc) {
-  let content = doc.children[0].children.filter(child => child.type == 'FRAME')[0].children
-  let promises = [];
+  const content = doc.children[0].children.filter(child => child.type == 'FRAME')[0].children
+  const promises = [];
   const sortedContent = content.sort(function(a, b) {
     return a.absoluteBoundingBox.y - b.absoluteBoundingBox.y;
   });
