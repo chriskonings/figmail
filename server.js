@@ -58,7 +58,10 @@ function buildBody(body) {
 function convert(doc) {
   let content = doc.children[0].children.filter(child => child.type == 'FRAME')[0].children
   let promises = [];
-  content.forEach(async (component) => {
+  const sortedContent = content.sort(function(a, b) {
+    return a.absoluteBoundingBox.y - b.absoluteBoundingBox.y;
+  });
+  sortedContent.forEach(async (component) => {
     // build component in to file
     // match component with HTML file
     if (component.name === 'header') {
