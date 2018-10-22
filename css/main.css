@@ -4,19 +4,6 @@ body {
   padding: 0;
 }
 
-.row {
-  position: relative;
-  margin: 20px auto;
-  width: 1024px;
-}
-
-.parent {
-  position: relative;
-  top: 0;
-  left: 0;
-  width: 1024px;
-}
-
 #progress {
   border-bottom: 1px solid black;
   visibility: hidden;
@@ -57,29 +44,6 @@ input {
   border: none;
   border-radius: 3px;
   margin-bottom: 60px;
-}
-
-img, canvas {
-  top: 0;
-  left: 0;
-  position: absolute;
-}
-
-.base_image {
-  position: relative;
-}
-
-.template {
-  width: 1024px;
-  height: auto;
-}
-
-.reflection {
-  top: 17.97%;
-  left: 28.2%;
-  width: 27.2%;
-  height: auto;
-  position: absolute;
 }
 
 #row3 {
