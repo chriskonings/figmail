@@ -21,6 +21,10 @@ function rgbToHex(r, g, b) {
   return 'rgba(' +  r * 255 + ',' + g * 255 + ',' +  b * 255 + ')'
 }
 
+// COMPONENT BUILD FUNCTIONS
+// Each function is matched to a component in Figma
+
+// Builds basic header component
 function buildHeader(header) {
   const textEl = header.children.filter(child => child.name == 'text')[0];
   const backgroundEl = header.children.filter(child => child.name == 'background')[0];
@@ -38,6 +42,7 @@ function buildHeader(header) {
   return promise
 }
 
+// Builds basic body component
 function buildBody(body) {
   const textEl = body.children.filter(child => child.name == 'text')[0];
   const backgroundEl = body.children.filter(child => child.name == 'background')[0];
@@ -62,8 +67,7 @@ function convert(doc) {
     return a.absoluteBoundingBox.y - b.absoluteBoundingBox.y;
   });
   sortedContent.forEach(async (component) => {
-    // build component in to file
-    // match component with HTML file
+    // match component name to convert function
     if (component.name === 'header') {
       promises.push(buildHeader(component))
     }
@@ -72,7 +76,10 @@ function convert(doc) {
     }
   });
   const template = Promise.all(promises).then(function(values) {
+    // Complete HTML email template by adding
+    // head and footer partials to content
     const allComponents = head + values.join() + footer
+    // Write to email file
     fs.writeFile('tmp/email.html', allComponents, function(err) {
       if(err) {return console.log(err);}
       console.log('The file was saved !');
@@ -91,6 +98,7 @@ app.get('/convert', async (req, res) => {
     });
     const json = await response.json();
     const converted = await convert(json.document)
+    // returns converted email template
     res.json(converted)
   } catch (error) {
     console.log(error);
