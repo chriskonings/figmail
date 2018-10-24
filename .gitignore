@@ -2,3 +2,4 @@
 functions/.build
 node_modules
 public
+package-lock.json
